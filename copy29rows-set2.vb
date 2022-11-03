@@ -23,17 +23,18 @@ With Range("L4:L206")
             Range("N62").Value = LastDataRow
      
         Elseif  LastDataRow - getPreviousSetsRow > 29 Then
-            'find row of work order same as Row32 in Set1
-            For Each WOCurrentSet In Range("B" & getPreviousSetsRow & ":B" & getPreviousSetsRow+29)
-                If WOCurrentSet.Value <> Range("B" & getPreviousSetsRow +29).Value Then
+            'find row of work order is not equal as getPreviousSetsRow to more 29 row from it
+            For Each WOCurrentSet In Range("B" & getPreviousSetsRow & ":B" & getPreviousSetsRow+28)
+                If WOCurrentSet.Value <> Range("B" & getPreviousSetsRow).Value Then
                     SecondDataRowCurrent = WOCurrentSet.Row
                     Exit For
+                Else
+                    SecondDataRowCurrent = getPreviousSetsRow+28
                 End If
             Next WOCurrentSet      
 
-'            if Range("B" & getPreviousSetsRow+1 ).value = Range("B" & getPreviousSetsRow+30 ).value then
+            Range("B" & getPreviousSetsRow & ":L" & SecondDataRowCurrent).Copy
 
-'           end if
         End If
     
     End If
