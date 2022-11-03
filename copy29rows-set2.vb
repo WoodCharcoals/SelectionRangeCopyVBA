@@ -1,14 +1,14 @@
 Sub CPSet2_Click()
 'dynamic copy selection range code
-Dim LastDataRow, getPreviousSetsRow As Long
-Dim WOLastRowOfSet, WOEqPreviousSet, WOInCurrentSet, WOInNextSet, WOInPreviousSet  As Range
+Dim LastDataRow, getPreviousSetsRow,SecondDataRowCurrent As Long
+Dim WOLastRowOfSet, WOEqPreviousSet, WOCurrentSet, WOInNextSet, WOInPreviousSet  As Range
 
 Application.CutCopyMode = False
 
 'Last row of selection's range in copy button set1
 getPreviousSetsRow = Range("N33").Value + 1
 
-With Range("L4:L204")
+With Range("L4:L206")
 
     LastDataRow = NotZero.Row - 1
 
@@ -17,22 +17,23 @@ With Range("L4:L204")
     ElseIf getPreviousSetsRow = 0 Then
         Exit Sub
     Else
+        'basic condition
         If LastDataRow - getPreviousSetsRow <= 29 Then
             Range("B" & getPreviousSetsRow & ":L" & LastDataRow).Copy
             Range("N62").Value = LastDataRow
      
         Elseif  LastDataRow - getPreviousSetsRow > 29 Then
             'find row of work order same as Row32 in Set1
-            For Each CellValue In Range("B4:B31")
-                If CellValue.Value = Range("B32").Value Then
-                    FoundWO32 = CellValue.Row
+            For Each WOCurrentSet In Range("B" & getPreviousSetsRow & ":B" & getPreviousSetsRow+29)
+                If WOCurrentSet.Value <> Range("B" & getPreviousSetsRow +29).Value Then
+                    SecondDataRowCurrent = WOCurrentSet.Row
                     Exit For
                 End If
-            Next CellValue      
+            Next WOCurrentSet      
 
-            if Range("B" & getPreviousSetsRow+1 ).value then
+'            if Range("B" & getPreviousSetsRow+1 ).value = Range("B" & getPreviousSetsRow+30 ).value then
 
-            end if
+'           end if
         End If
     
     End If

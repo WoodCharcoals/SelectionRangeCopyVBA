@@ -5,7 +5,7 @@ Dim FoundWO32, W32InSet2Row, CellValue, CellValue2  As Range
 
 Application.CutCopyMode = False
 
-With Range("L4:L204")
+With Range("L4:L206")
 
     LastDataRow = NotZero.Row - 1
     
