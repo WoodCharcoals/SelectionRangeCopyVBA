@@ -1,6 +1,6 @@
 Sub CPSet2_Click()
 'dynamic copy selection range code
-Dim LastDataRow, getPreviousSetsRow,SecondDataRowCurrent As Long
+Dim LastDataRow, getPreviousSetsRow,SecondDataRowCurrent,FindDataNextSet As Long
 Dim WOLastRowOfSet, WOEqPreviousSet, WOCurrentSet, WOInNextSet, WOInPreviousSet  As Range
 
 Application.CutCopyMode = False
@@ -21,19 +21,26 @@ With Range("L4:L206")
         If LastDataRow - getPreviousSetsRow <= 29 Then
             Range("B" & getPreviousSetsRow & ":L" & LastDataRow).Copy
             Range("N62").Value = LastDataRow
+            Range("O62").Value = "Case1"
      
         Elseif  LastDataRow - getPreviousSetsRow > 29 Then
             'find row of work order is not equal as getPreviousSetsRow to more 29 row from it
-            For Each WOCurrentSet In Range("B" & getPreviousSetsRow & ":B" & getPreviousSetsRow+28)
-                If WOCurrentSet.Value <> Range("B" & getPreviousSetsRow).Value Then
+            For Each WOCurrentSet In Range("B" & getPreviousSetsRow & ":B" & getPreviousSetsRow+29)
+                If WOCurrentSet.Value = Range("B" & getPreviousSetsRow+29).Value Then
                     SecondDataRowCurrent = WOCurrentSet.Row
-                    Exit For
-                Else
-                    SecondDataRowCurrent = getPreviousSetsRow+28
                 End If
-            Next WOCurrentSet      
+            Next WOCurrentSet 
+            
+            if Range("B" & getPreviousSetsRow+29).Value = Range("B" & getPreviousSetsRow+30).Value Then
 
-            Range("B" & getPreviousSetsRow & ":L" & SecondDataRowCurrent).Copy
+                Range("B" & getPreviousSetsRow & ":L" & getPreviousSetsRow+29).Copy
+                Range("N62").Value = getPreviousSetsRow +29
+                Range("O62").Value = "Case2.1"
+            Else
+                Range("B" & getPreviousSetsRow & ":L" & SecondDataRowCurrent-1).Copy
+                Range("N62").Value = SecondDataRowCurrent-1
+                Range("O62").Value = "Case2.2"
+            end if              
 
         End If
     
