@@ -1,13 +1,16 @@
 Sub CPSet2_Click()
 'dynamic copy selection range code
-Dim LastDataRow, PrevSetsRow,SecondDataRowCurrent,FindDataNextSet, DataSet As Long
+Dim LastDataRow, PrevSetsRow, SecondDataRowCurrent, FindDataNextSet, DataSet As Long
 Dim WOLastRowOfSet, WOEqPrevSet, WOCurrentSet, WONextSet, WOInPrevSet  As Range
 
 Application.CutCopyMode = False
-
+'clear const
+Range("N62:P62").ClearContents
 'Last row of selection's range in copy button set1
 PrevSetsRow = Range("N33").Value + 1
-DataSet = PrevSetsRow + 29
+DataSet = Range("N33").Value + 29
+Debug.Print DataSet
+
 With Range("L4:L206")
 
     LastDataRow = NotZero.Row - 1
@@ -22,42 +25,56 @@ With Range("L4:L206")
             Range("B" & PrevSetsRow & ":L" & LastDataRow).Copy
             Range("N62").Value = LastDataRow
             Range("O62").Value = "Case1"
+            Range("P62").Value = "Basic Case"
      
-        Elseif  LastDataRow - PrevSetsRow > 29 Then
+        ElseIf LastDataRow - PrevSetsRow > 29 Then
             'find row of work order is not equal as PrevSetsRow to more 29 row from it
-            For Each WOCurrentSet In Range("B" & PrevSetsRow & ":B" & Dataset)
+            For Each WOCurrentSet In Range("B" & PrevSetsRow & ":B" & DataSet)
                 If WOCurrentSet.Value = Range("B" & DataSet).Value Then
-                    SecondDataRowCurrent = WOCurrentSet.Row
+                    SecondDataRowCurrent = WOCurrentSet.Row - 1
+                    Exit For
                 End If
             Next WOCurrentSet
-            'find row of current val in next data set
-            for each WONextSet in range ("B" & Dataset &":B" & dataset+29)
-                if wonextset.value <> range("B" & dataset).value then 
-                    FindDataNextSet = WONextSet.row -1
-                else    
-                    FindDataNextSet = dateset+29
-                end if
-            next WONextSet
             
-            'return selection range 
-            if FindDataNextSet - SecondDataRowCurrent > 29
+              Debug.Print "2ndDataRow:" & SecondDataRowCurrent
+            'find row of current val in next data set
+            For Each WONextSet In Range("B" & DataSet & ":B" & DataSet + 29)
+                If WONextSet.Value <> Range("B" & DataSet).Value Then
+                    FindDataNextSet = WONextSet.Row
+                    Range("P62").Value = "Sub_case.01"
+                    Exit For
+                Else
+                    FindDataNextSet = DataSet
+                    Range("P62").Value = "Sub_case.02"
+                    Exit For
+                End If
+            Next WONextSet
+            
+            Debug.Print "FindDataNextSet:" & FindDataNextSet
+            Debug.Print "FindNext:" & FindDataNextSet & ", 2nd:" & SecondDataRowCurrent
+            Debug.Print "dif1:" & FindDataNextSet - SecondDataRowCurrent
+            
+            'return selection range
+            If FindDataNextSet - SecondDataRowCurrent > 29 Then
 
                 Range("B" & PrevSetsRow & ":L" & SecondDataRowCurrent).Copy
-                Range("N62").Value = PrevSetsRow +29
-                Range("O62").Value = "Case2.3" 
+                Range("N62").Value = SecondDataRowCurrent
+                Range("O62").Value = "Case2.3"
 
-            ElseIf Range("B" & DataSet).Value = Range("B" & PrevSetsRow+30).Value Then
+            ElseIf Range("B" & DataSet).Value = Range("B" & DataSet + 1).Value Then
 
-                Range("B" & PrevSetsRow & ":L" & DataSet).Copy
-                Range("N62").Value = PrevSetsRow +29
+                Range("B" & PrevSetsRow & ":L" & SecondDataRowCurrent).Copy
+                Range("N62").Value = SecondDataRowCurrent
                 Range("O62").Value = "Case2.1"
-            Elseif
-                Range("B" & PrevSetsRow & ":L" & SecondDataRowCurrent-1).Copy
-                Range("N62").Value = SecondDataRowCurrent-1
+                
+            ElseIf Range("B" & DataSet).Value <> Range("B" & DataSet + 1).Value Then
+                Range("B" & PrevSetsRow & ":L" & FindDataNextSet).Copy
+                Range("N62").Value = FindDataNextSet
                 Range("O62").Value = "Case2.2"
-            else
-
-            end if              
+                
+            Else
+                Exit Sub
+            End If
 
         End If
     
