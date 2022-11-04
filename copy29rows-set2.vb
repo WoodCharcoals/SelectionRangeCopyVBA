@@ -1,7 +1,7 @@
 Sub CPSet2_Click()
 'dynamic copy selection range code
 Dim LastDataRow, PrevSetsRow, SecondDataRowCurrent, FindDataNextSet, DataSet As Long
-Dim WOLastRowOfSet, WOEqPrevSet, WOCurrentSet, WONextSet, WOInPrevSet  As Range
+Dim CurrentDataRange, NextDataRange, WOCurrentSet, WONextSet, WOInPrevSet  As Range
 
 Application.CutCopyMode = False
 'clear const
@@ -9,8 +9,11 @@ Range("N62:P62").ClearContents
 'Last row of selection's range in copy button set1
 PrevSetsRow = Range("N33").Value + 1
 DataSet = Range("N33").Value + 29
-Debug.Print DataSet
+'CurrentDataRange = Range("B" & PrevSetsRow & ":B" & DataSet)
+'NextDataRange = Range("B" & DataSet & ":B" & DataSet + 29)
 
+Debug.Print "CurrentRange=Row(" & PrevSetsRow & ":" & DataSet & ")"
+Debug.Print "NextDataRange=Row(" & DataSet & ":" & DataSet + 29 & ")"
 With Range("L4:L206")
 
     LastDataRow = NotZero.Row - 1
@@ -43,10 +46,10 @@ With Range("L4:L206")
                     FindDataNextSet = WONextSet.Row
                     Range("P62").Value = "Sub_case.01"
                     Exit For
-                Else
-                    FindDataNextSet = DataSet
-                    Range("P62").Value = "Sub_case.02"
-                    Exit For
+'                Else
+'                    FindDataNextSet = DataSet
+'                    Range("P62").Value = "Sub_case.02"
+'                    Exit For
                 End If
             Next WONextSet
             
