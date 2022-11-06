@@ -10,8 +10,8 @@ Dim CurrentDataRange, NextDataRange, getPrevRow, setResultRow  As Range
 Application.CutCopyMode = False
 
 'set var from previous selection rang
-if Range("N4").Value  <= 4 then
-    Range("N4").Value = 4
+if Range("N4").Value  < 3 then
+    Range("N4").Value = 3
 end if
 EndPrevSetsRow = Range("N4").Value 
 BeginCurrentRow = Range("N4").Value+1
@@ -20,36 +20,71 @@ EndCurrentRow = BeginCurrentRow + 28
 'set var for relative range
 set getPrevRow = range("N4")
 Set setResultRow = Range("N33")
-Set CurrentDataRange = Range("B" & CurrentSetRow & ":B" & EndCurrentRow)
-Set NextDataRange = Range("B" & EndCurrentRow & ":B" & EndCurrentRow + 28)
+Set CurrentDataRange = Range("B" & BeginCurrentRow & ":B" & EndCurrentRow)
+Set NextDataRange = Range("B" & EndCurrentRow & ":B" & EndCurrentRow + 29)
 
-Debug.Print "CurrentRange=Row(" & CurrentSetRow & ":" & EndCurrentRow & ")"
-Debug.Print "NextDataRange=Row(" & EndCurrentRow & ":" & EndCurrentRow + 28 & ")"
+Debug.Print "CurrentRange=Row(" & BeginCurrentRow & ":" & EndCurrentRow & ")"
+Debug.Print "NextDataRange=Row(" & EndCurrentRow & ":" & EndCurrentRow + 29 & ")"
 
 With Range("L4:L206")
 
     TotalRows = NotZero.Row - 1
 
-    For Each DataCurrentSet In CurrentDataRange
-        If DataCurrentSet.Value = Range("B" & EndDataSet).Value Then
-            FindCurrentRow = DataCurrentSet.Row
+    For Each CurrentDataRange In CurrentDataRange
+        If CurrentDataRange.Value = Range("B" & EndCurrentRow).Value Then
+            FindCurrentRow = CurrentDataRange.Row
             Exit For
         End If
-    Next DataCurrentSet
+    Next CurrentDataRange
               
     'find row of current val in next data set
-    For Each DataNextSet In NextDataRange
-        If DataNextSet.Value <> Range("B" & EndDataSet).Value Then
-            FindNextRow = DataNextSet.Row - 1
+    For Each NextDataRange In NextDataRange
+        If NextDataRange.Value <> Range("B" & EndCurrentRow).Value Then
+            FindNextRow = NextDataRange.Row - 1
             Exit For
         Else
-            FindNextRow = EndDataSet + 28
+            FindNextRow = EndCurrentRow + 28
             
         End If
-    Next DataNextSet
+    Next NextDataRange
 'FindCurrentRow = Find row has same value as EndCurrentRow row 
 'FindNextRow  find row has same value as EndCurrentRow after EndCurrentRow row
 'DiffRange = FindNextRow - FindCurrentRow 
+
+If EndPrevSetsRow < 3 then
+    setResultRow.offset(-29,0).Value = "0"
+    Exit Sub
+
+Else
+    if TotalRows - BeginCurrentRow <=28 then
+        Range("B" & BeginCurrentRow & ":L" & EndCurrentRow).Copy
+        setResultRow.Value = EndCurrentRow
+        setResultRow.Offset(0, 1).Value = "Case1"
+        setResultRow.Offset(0, 2).Value = "Basic Case"  
+
+    ElseIf FindNextRow - FindCurrentRow > 29 then
+
+        if  FindCurrentRow < BeginCurrentRow + 15 then
+            Range("B" & BeginCurrentRow & ":L" & FindCurrentRow -1).Copy
+            setResultRow.Offset(-29,0 ).Value = FindCurrentRow -1
+            setResultRow.Offset(-29, 1).Value = "ReverseCase1"
+            setResultRow.Offset(-29, 2).Value = "Subcase1.1"   
+
+        elseif FindCurrentRow > BeginCurrentRow + 15 then
+            Range("B" & BeginCurrentRow & ":L" & EndCurrentRow).Copy
+            setResultRow.Value = EndCurrentRow
+            setResultRow.Offset(0, 1).Value = "ReverseCase1"
+            setResultRow.Offset(0, 2).Value = "Subcase1.1"       
+        else
+
+        end if
+    else 
+        
+    End If
+End If
+
+end with
+
 '-------------------------------------------------------------------
 '-------------------------------old---------------------------------
 '-------------------------------------------------------------------
