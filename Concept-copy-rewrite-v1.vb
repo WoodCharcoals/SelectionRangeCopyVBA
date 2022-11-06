@@ -2,6 +2,7 @@ Sub CPSet1_Click()
 'dynamic copy selection range code
 Dim TotalRows, EndPrevSetsRow, CurrentSetRow, NextSetRow, _
 BeginCurrentRow, EndCurrentRow, BeginNextSetRow, EndNextSetRow As Long
+dim FindCurrentRow, FindNextRow as long
 
 Dim CurrentDataRange, NextDataRange, getPrevRow, setResultRow  As Range
 
@@ -14,45 +15,47 @@ if Range("N4").Value  <= 4 then
 end if
 EndPrevSetsRow = Range("N4").Value 
 BeginCurrentRow = Range("N4").Value+1
-EndCurrentRow = BeginCurrentRow + 29
+EndCurrentRow = BeginCurrentRow + 28
 
 'set var for relative range
 set getPrevRow = range("N4")
 Set setResultRow = Range("N33")
 Set CurrentDataRange = Range("B" & CurrentSetRow & ":B" & EndCurrentRow)
-Set NextDataRange = Range("B" & EndCurrentRow & ":B" & EndCurrentRow + 29)
+Set NextDataRange = Range("B" & EndCurrentRow & ":B" & EndCurrentRow + 28)
 
 Debug.Print "CurrentRange=Row(" & CurrentSetRow & ":" & EndCurrentRow & ")"
-Debug.Print "NextDataRange=Row(" & EndCurrentRow & ":" & EndCurrentRow + 29 & ")"
+Debug.Print "NextDataRange=Row(" & EndCurrentRow & ":" & EndCurrentRow + 28 & ")"
 
 With Range("L4:L206")
 
     TotalRows = NotZero.Row - 1
 
     For Each DataCurrentSet In CurrentDataRange
-                If DataCurrentSet.Value = Range("B" & EndDataSet).Value Then
-                    SecondDataRowCurrent = DataCurrentSet.Row - 1
-                    Exit For
-                End If
-            Next DataCurrentSet
+        If DataCurrentSet.Value = Range("B" & EndDataSet).Value Then
+            FindCurrentRow = DataCurrentSet.Row
+            Exit For
+        End If
+    Next DataCurrentSet
               
-            'find row of current val in next data set
-            For Each DataNextSet In NextDataRange
-                If DataNextSet.Value <> Range("B" & EndDataSet).Value Then
-                    FindDataNextSet = DataNextSet.Row - 1
-                    Exit For
-                Else
-                    FindDataNextSet = EndDataSet + 29
-                    
-                End If
-            Next DataNextSet
-
+    'find row of current val in next data set
+    For Each DataNextSet In NextDataRange
+        If DataNextSet.Value <> Range("B" & EndDataSet).Value Then
+            FindNextRow = DataNextSet.Row - 1
+            Exit For
+        Else
+            FindNextRow = EndDataSet + 28
+            
+        End If
+    Next DataNextSet
+'FindCurrentRow = Find row has same value as EndCurrentRow row 
+'FindNextRow  find row has same value as EndCurrentRow after EndCurrentRow row
+'DiffRange = FindNextRow - FindCurrentRow 
 '-------------------------------------------------------------------
 '-------------------------------old---------------------------------
 '-------------------------------------------------------------------
 
     If PrevSetsRow < 4 Then
-        setResultRow.Value = "0"
+        setResultRow.offset(-29,0).Value = "0"
         Exit Sub
     Else
         'basic condition
