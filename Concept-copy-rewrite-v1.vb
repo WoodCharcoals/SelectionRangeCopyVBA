@@ -1,8 +1,9 @@
 Sub CPSet1_Click()
 'dynamic copy selection range code
-Dim LastDataRow, PrevSetsRow, SecondDataRowCurrent, FindDataNextSet, _
-BeginDataSet, EndDataSet, NextDataSet As Long
-Dim CurrentDataRange, NextDataRange, DataCurrentSet, DataNextSet, setResultRow  As Range
+Dim TotalRows, EndPrevSetsRow, CurrentSetRow, NextSetRow, _
+BeginCurrentRow, EndCurrentRow, BeginNextSetRow, EndNextSetRow As Long
+
+Dim CurrentDataRange, NextDataRange, getPrevRow, setResultRow  As Range
 
 'set initial setting of procedure
 Application.CutCopyMode = False
@@ -11,35 +12,24 @@ Application.CutCopyMode = False
 if Range("N4").Value  <= 4 then
     Range("N4").Value = 4
 end if
-PrevSetsRow = Range("N4").Value 
-EndDataSet = Range("N4").Value + 29
+EndPrevSetsRow = Range("N4").Value 
+BeginCurrentRow = Range("N4").Value+1
+EndCurrentRow = BeginCurrentRow + 29
 
 'set var for relative range
-Set setResultRow = Range("N62")
-Set CurrentDataRange = Range("B" & PrevSetsRow & ":B" & EndDataSet)
-Set NextDataRange = Range("B" & EndDataSet & ":B" & EndDataSet + 29)
+set getPrevRow = range("N4")
+Set setResultRow = Range("N33")
+Set CurrentDataRange = Range("B" & CurrentSetRow & ":B" & EndCurrentRow)
+Set NextDataRange = Range("B" & EndCurrentRow & ":B" & EndCurrentRow + 29)
 
-Debug.Print "CurrentRange=Row(" & PrevSetsRow & ":" & EndDataSet & ")"
-Debug.Print "NextDataRange=Row(" & EndDataSet & ":" & EndDataSet + 29 & ")"
+Debug.Print "CurrentRange=Row(" & CurrentSetRow & ":" & EndCurrentRow & ")"
+Debug.Print "NextDataRange=Row(" & EndCurrentRow & ":" & EndCurrentRow + 29 & ")"
 
 With Range("L4:L206")
 
-    LastDataRow = NotZero.Row - 1
+    TotalRows = NotZero.Row - 1
 
-    If PrevSetsRow < 4 Then
-        setResultRow.Value = "0"
-        Exit Sub
-    Else
-        'basic condition
-        If LastDataRow - PrevSetsRow <= 29 Then
-            Range("B" & PrevSetsRow & ":L" & LastDataRow).Copy
-            setResultRow.Value = LastDataRow
-            setResultRow.Offset(0, 1).Value = "Case1"
-            setResultRow.Offset(0, 2).Value = "Basic Case"
-            
-        ElseIf LastDataRow - PrevSetsRow > 29 Then
-            'find row of work order is not equal as PrevSetsRow to more 29 row from it
-            For Each DataCurrentSet In CurrentDataRange
+    For Each DataCurrentSet In CurrentDataRange
                 If DataCurrentSet.Value = Range("B" & EndDataSet).Value Then
                     SecondDataRowCurrent = DataCurrentSet.Row - 1
                     Exit For
@@ -56,6 +46,25 @@ With Range("L4:L206")
                     
                 End If
             Next DataNextSet
+
+'-------------------------------------------------------------------
+'-------------------------------old---------------------------------
+'-------------------------------------------------------------------
+
+    If PrevSetsRow < 4 Then
+        setResultRow.Value = "0"
+        Exit Sub
+    Else
+        'basic condition
+        If LastDataRow - PrevSetsRow <= 29 Then
+            Range("B" & PrevSetsRow & ":L" & LastDataRow).Copy
+            setResultRow.Value = LastDataRow
+            setResultRow.Offset(0, 1).Value = "Case1"
+            setResultRow.Offset(0, 2).Value = "Basic Case"
+            
+        ElseIf LastDataRow - PrevSetsRow > 29 Then
+            'find row of work order is not equal as PrevSetsRow to more 29 row from it
+            
             
             Debug.Print "FindNext:" & FindDataNextSet & ", 2ndRow:" & SecondDataRowCurrent
             Debug.Print "Diff FindNext-PrevSet:" & FindDataNextSet - PrevSetsRow
