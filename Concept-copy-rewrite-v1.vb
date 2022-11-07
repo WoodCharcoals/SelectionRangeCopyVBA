@@ -64,13 +64,13 @@ Else
 
     ElseIf FindNextRow - FindCurrentRow > 29 then
 
-        if  FindCurrentRow < BeginCurrentRow + 15 then
+        if  FindCurrentRow < BeginCurrentRow + 14 then
             Range("B" & BeginCurrentRow & ":L" & FindCurrentRow -1).Copy
             setResultRow.Offset(-29,0 ).Value = FindCurrentRow -1
             setResultRow.Offset(-29, 1).Value = "ReverseCase1"
             setResultRow.Offset(-29, 2).Value = "Subcase1.1"   
 
-        elseif FindCurrentRow > BeginCurrentRow + 15 then
+        elseif FindCurrentRow > BeginCurrentRow + 14 then
             Range("B" & BeginCurrentRow & ":L" & EndCurrentRow).Copy
             setResultRow.Value = EndCurrentRow
             setResultRow.Offset(0, 1).Value = "ReverseCase1"
