@@ -60,35 +60,50 @@ If EndPrevSetsRow < 3 Then
     Debug.Print "Failed1"
     Exit Sub
 
-Else
-    If TotalRows - BeginCurrentRow <= 28 Then
+ElseIf TotalRows - BeginCurrentRow <= 28 Then
         Range("B" & BeginCurrentRow & ":L" & EndCurrentRow).Copy
         setResultRow.Value = EndCurrentRow
         setResultRow.Offset(0, 1).Value = "Case1"
         setResultRow.Offset(0, 2).Value = "Basic Case"
 
-    ElseIf TotalRows - BeginCurrentRow > 28 Then
+ElseIf TotalRows - BeginCurrentRow > 28 Then
 
-        If FindCurrentRow = BeginCurrentRow Then
-            Range("B" & BeginCurrentRow & ":L" & FindNextRow - 1).Copy
-            setResultRow.Value = FindNextRow - 1
-            setResultRow.Offset(0, 1).Value = "Case2"
-            setResultRow.Offset(0, 2).Value = "Subcase1.1"
-            Debug.Print "Case2"
-            
-        ElseIf FindCurrentRow <= 18 Then
-            Range("B" & BeginCurrentRow & ":L" & FindCurrentRow - 1).Copy
-            setResultRow.Offset(-29, 0).Value = FindCurrentRow - 1
-            setResultRow.Offset(-29, 1).Value = "ReverseCase1"
-            setResultRow.Offset(-29, 2).Value = "Subcase1.1"
-            Debug.Print "RCase1"
-            
-        End If
+
+    If FindCurrentRow = BeginCurrentRow Then
+
+        Range("B" & BeginCurrentRow & ":L" & FindNextRow - 1).Copy
+        setResultRow.Value = FindNextRow - 1
+        setResultRow.Offset(0, 1).Value = "Case2"
+        setResultRow.Offset(0, 2).Value = "Subcase1.1"
+        setResultRow.Offset(-29, 0).Value = 3
+        Debug.Print "Case2"
+        
+    ElseIf FindCurrentRow <> BeginCurrentRow Then
+        Range("B" & BeginCurrentRow & ":L" & FindCurrentRow - 1).Copy
+        setResultRow.Value = FindCurrentRow - 1
+        setResultRow.Offset(0, 1).Value = "Case3"
+        setResultRow.Offset(0, 2).Value = "Subcase1.1"
+        Debug.Print "Case3"
+
+    ElseIf FindCurrentRow >= 18 Then
+        Range("B" & BeginCurrentRow & ":L" & FindCurrentRow - 1).Copy
+        setResultRow.Offset(-29, 0).Value = FindCurrentRow - 1
+        setResultRow.Offset(-29, 1).Value = "ReverseCase1"
+        setResultRow.Offset(-29, 2).Value = "Subcase1.1"
+        Debug.Print "RCase1"
         
     End If
     
 End If
 
 End With
+
+    If Application.CutCopyMode = xlCopy Then
+        ''Debug.Print "Copy status:=Done"
+        Me.CPSet1.BackColor = vbGreen 'RGB(50, 205, 50)
+    Else
+        ''Debug.Print "Copy status:=Failed"
+        Me.CPSet1.BackColor = vbRed 'RGB(255, 0, 0)
+    End If
 
 End Sub
