@@ -1,4 +1,5 @@
 Sub CPSet1_Click()
+
 'dynamic copy selection range code
 Dim TotalRows, EndPrevSetsRow, CurrentSetRow, NextSetRow, _
 BeginCurrentRow, EndCurrentRow, BeginNextSetRow, EndNextSetRow As Long
@@ -56,41 +57,54 @@ Debug.Print "FNR-FCR:" & FindNextRow - FindCurrentRow
 Debug.Print "FCR:" & FindCurrentRow & ",BCR:" & BeginCurrentRow
 
 If EndPrevSetsRow < 3 Then
-    setResultRow.Offset(-29, 0).Value = "0"
+    setResultRow.Offset(-29, 0).Value = 3
     Debug.Print "Failed1"
     Exit Sub
 
 ElseIf TotalRows - BeginCurrentRow <= 28 Then
-        Range("B" & BeginCurrentRow & ":L" & EndCurrentRow).Copy
-        setResultRow.Value = EndCurrentRow
+        Range("B" & BeginCurrentRow & ":L" & TotalRows).Copy
+        setResultRow.Value = TotalRows
         setResultRow.Offset(0, 1).Value = "Case1"
         setResultRow.Offset(0, 2).Value = "Basic Case"
 
 ElseIf TotalRows - BeginCurrentRow > 28 Then
 
 
-    If FindCurrentRow = BeginCurrentRow Then
+    If FindNextRow - FindCurrentRow > 28 Then
+    
+        If FindCurrentRow = BeginCurrentRow Then
+            Range("B" & BeginCurrentRow & ":L" & BeginCurrentRow + 28).Copy
+            setResultRow.Value = BeginCurrentRow + 28
+            setResultRow.Offset(0, 1).Value = "Case1.3"
+            setResultRow.Offset(0, 2).Value = "subcase3.2"
+            
+        ElseIf FindCurrentRow < BeginCurrentRow + 16 Then
+            Range("B" & BeginCurrentRow & ":L" & FindCurrentRow - 1).Copy
+            setResultRow.Offset(-29, 0).Value = FindCurrentRow - 1
+            setResultRow.Offset(-29, 1).Value = "Case1.1"
+            setResultRow.Offset(-29, 2).Value = "subcase3.0"
 
-        Range("B" & BeginCurrentRow & ":L" & FindNextRow - 1).Copy
-        setResultRow.Value = FindNextRow - 1
-        setResultRow.Offset(0, 1).Value = "Case2"
-        setResultRow.Offset(0, 2).Value = "Subcase1.1"
-        setResultRow.Offset(-29, 0).Value = 3
-        Debug.Print "Case2"
-        
-    ElseIf FindCurrentRow <> BeginCurrentRow Then
-        Range("B" & BeginCurrentRow & ":L" & FindCurrentRow - 1).Copy
-        setResultRow.Value = FindCurrentRow - 1
-        setResultRow.Offset(0, 1).Value = "Case3"
-        setResultRow.Offset(0, 2).Value = "Subcase1.1"
-        Debug.Print "Case3"
+        ElseIf FindCurrentRow >= BeginCurrentRow + 16 Then
+            Range("B" & BeginCurrentRow & ":L" & FindCurrentRow - 1).Copy
+            setResultRow.Value = FindCurrentRow - 1
+            setResultRow.Offset(0, 1).Value = "Case1.2"
+            setResultRow.Offset(0, 2).Value = "subcase3.1"
+        End If
 
-    ElseIf FindCurrentRow >= 18 Then
-        Range("B" & BeginCurrentRow & ":L" & FindCurrentRow - 1).Copy
-        setResultRow.Offset(-29, 0).Value = FindCurrentRow - 1
-        setResultRow.Offset(-29, 1).Value = "ReverseCase1"
-        setResultRow.Offset(-29, 2).Value = "Subcase1.1"
-        Debug.Print "RCase1"
+    ElseIf FindNextRow - FindCurrentRow <= 28 Then
+    
+        If FindCurrentRow < BeginCurrentRow + 16 Then
+            Range("B" & BeginCurrentRow & ":L" & FindCurrentRow - 1).Copy
+            setResultRow.Offset(-29, 0).Value = FindCurrentRow - 1
+            setResultRow.Offset(-29, 1).Value = "Case1.1"
+            setResultRow.Offset(-29, 2).Value = "subcase3.0"
+
+        ElseIf FindCurrentRow >= BeginCurrentRow + 16 Then
+            Range("B" & BeginCurrentRow & ":L" & FindCurrentRow - 1).Copy
+            setResultRow.Value = FindCurrentRow - 1
+            setResultRow.Offset(0, 1).Value = "Case1.2"
+            setResultRow.Offset(0, 2).Value = "subcase3.1"
+        End If
         
     End If
     
